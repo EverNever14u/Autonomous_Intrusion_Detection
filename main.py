@@ -1,3 +1,5 @@
+from tools import *
+
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
@@ -9,15 +11,6 @@ import time
 import os
 
 
-# ANSI color codes
-class Color:
-    GREEN = '\033[92m'
-    RESET = '\033[0m'
-
-# Function to format time in green
-def get_duration(start):
-    duration_s = (time.time() - start)
-    return f"{Color.GREEN}({duration_s:.2f}s){Color.RESET}"
 
 # Data import
 start_time = time.time()
