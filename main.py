@@ -1,7 +1,10 @@
 from tools import *
-from plot_generator import generate_plots
+from reward_callback import RewardLoggerCallback
+from plot_generator import generate_plots, plot_mean_reward
 from rl_environment import IDS_Environment
 from data_saver import save_processed_data
+
+
 
 from stable_baselines3.common.evaluation import evaluate_policy
 from sklearn.preprocessing import LabelEncoder, StandardScaler
@@ -90,22 +93,37 @@ print(f"{Color.GREEN}-{Color.RESET}" * 30 + "\n")
 #rl_environment
 start_time = time.time()
 env = IDS_Environment(X_train, y_train)
+eval_env = IDS_Environment(X_test, y_test)
 print(f"init RL env done {get_duration(start_time)}")
 
 start_time = time.time()
-model = PPO("MlpPolicy", env, verbose=1)
+model = PPO("MlpPolicy", env, verbose=0)
 print(f"init model done {get_duration(start_time)}")
 
+#Callback
+reward_callback = RewardLoggerCallback(
+    eval_env=eval_env,
+    eval_freq=2000,
+    n_eval_episodes=3,
+    verbose=1
+)
+
 start_time = time.time()
-model.learn(total_timesteps=10000) 
+model.learn(total_timesteps=50000, callback=reward_callback) 
 print(f"Trening done {get_duration(start_time)}")
+
+plot_mean_reward(
+    reward_callback.timesteps_list,
+    reward_callback.mean_rewards,
+    reward_callback.std_rewards
+)
 
 test_env = IDS_Environment(X_test, y_test)
 
 obs, info = test_env.reset()
 total_reward = 0
 correct_predictions = 0
-STEPS_TO_TEST = 1000
+STEPS_TO_TEST = len(y_test)
 
 
 for i in range(STEPS_TO_TEST):
