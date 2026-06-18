@@ -1,6 +1,6 @@
 import time
 
-# ANSI color codes
+
 class Color:
     RED = '\033[91m'
     GREEN = '\033[92m'
@@ -10,7 +10,7 @@ class Color:
     RESET = '\033[0m'
 
     
-# Function to format time in green
+
 def get_duration(start):
     duration_s = (time.time() - start)
     if duration_s < 1:
@@ -20,6 +20,6 @@ def get_duration(start):
     else :
         return f"{Color.RED}({duration_s:.2f}s){Color.RESET}"
 
-# Parsing bools from env
+
 def str_to_bool(val):
     return str(val).lower() in ("true", "1", "yes")
